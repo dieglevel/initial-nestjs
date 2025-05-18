@@ -1,7 +1,7 @@
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder } from '@nestjs/swagger';
 
 
-export default new DocumentBuilder()
+export const SwaggerBuilder =  new DocumentBuilder()
    .setTitle('Cats example')
    .setDescription('The cats API description')
    .setVersion('1.0')
