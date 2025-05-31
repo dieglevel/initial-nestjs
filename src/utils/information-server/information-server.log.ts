@@ -14,6 +14,7 @@ export const informationServerLog = (port: number, hostname: string, env: string
       ['🟢', 'Port:', `${cyan}${port}${reset}`],
       ['🚨', 'Env:', `${cyan}${bold}${env}${reset}`],
       ['🚀', 'Url:', `${cyan}http://${hostname}:${port}${reset}`],
+      ['📄', 'Url:', `${cyan}http://${hostname}:${port}/api${reset}`],
    ];
 
    // Tính độ dài tối đa để tạo khung

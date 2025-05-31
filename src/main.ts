@@ -18,10 +18,17 @@ async function bootstrap() {
   app.enableCors();
 
   const documentFactory = () => SwaggerModule.createDocument(app, SwaggerBuilder);
-  SwaggerModule.setup('api', app, documentFactory);
+
+  SwaggerModule.setup('api', app, documentFactory, {
+    jsonDocumentUrl: 'swagger/json',
+  });
+
+
 
   await app.listen(port, hostname, () => {
     informationServerLog(port, hostname, env)
   });
+
+
 }
 bootstrap();

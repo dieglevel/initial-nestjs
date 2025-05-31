@@ -1,9 +1,16 @@
 import { DocumentBuilder } from '@nestjs/swagger';
 
 
-export const SwaggerBuilder =  new DocumentBuilder()
-   .setTitle('Cats example')
-   .setDescription('The cats API description')
+export const SwaggerBuilder = new DocumentBuilder()
+   .setTitle('Hội nhà thơ')
+   .setDescription('Em đứng bên sông')
    .setVersion('1.0')
-   .addTag('cats')
+   .addBearerAuth(
+      {
+         type: 'http',
+         scheme: 'bearer',
+         bearerFormat: 'JWT',
+      },
+      'token',
+   )
    .build();
