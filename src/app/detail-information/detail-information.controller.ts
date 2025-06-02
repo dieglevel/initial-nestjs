@@ -10,40 +10,60 @@ import {
 import { DetailInformationService } from "./detail-information.service";
 import { CreateDetailInformationDto } from "./dto/create-detail-information.dto";
 import { UpdateDetailInformationDto } from "./dto/update-detail-information.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { BaseController } from "@/common/base/base-controller";
+import { DetailInformationResponse } from "./dto/response/base.response";
 
 @ApiTags("Detail Information")
 @Controller("detail-information")
-export class DetailInformationController {
+export class DetailInformationController extends BaseController {
   constructor(
     private readonly detailInformationService: DetailInformationService,
-  ) {}
+  ) {
+    super();
+  }
 
   @Post()
-  create(@Body() createDetailInformationDto: CreateDetailInformationDto) {
-    return this.detailInformationService.create(createDetailInformationDto);
+  @ApiResponse({
+    status: 201,
+    description: "Detail information created successfully",
+    type: DetailInformationResponse,
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Bad Request",
+  })
+  async create(@Body() createDetailInformationDto: CreateDetailInformationDto) {
+    return await this.detailInformationService.create(
+      createDetailInformationDto,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.detailInformationService.findAll();
+  async findAll() {
+    return this.okResponse(await this.detailInformationService.findAll());
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.detailInformationService.findOne(id);
+  async findOne(@Param("id") id: string) {
+    return this.okResponse(await this.detailInformationService.findOne(id));
   }
 
   @Patch(":id")
-  update(
+  async update(
     @Param("id") id: string,
     @Body() updateDetailInformationDto: UpdateDetailInformationDto,
   ) {
-    return this.detailInformationService.update(id, updateDetailInformationDto);
+    return this.okResponse(
+      await this.detailInformationService.update(
+        id,
+        updateDetailInformationDto,
+      ),
+    );
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.detailInformationService.remove(id);
+  async remove(@Param("id") id: string) {
+    return this.okResponse(await this.detailInformationService.remove(id));
   }
 }
