@@ -1,10 +1,18 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from './common/config';
-import { JustLogSomethingModule } from './app/just-log-something/just-log-something.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "./common/config";
+import { DatabaseModule } from "./common/database";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { DetailInformationModule } from "./app/detail-information/detail-information.module";
 
 @Module({
-  imports: [ConfigModule, JustLogSomethingModule, AppModule],
+  imports: [
+    ConfigModule,
+    AppModule,
+    DatabaseModule,
+    TypeOrmModule.forFeature([]),
+    DetailInformationModule,
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

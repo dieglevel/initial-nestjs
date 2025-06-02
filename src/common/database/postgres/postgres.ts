@@ -1,0 +1,31 @@
+import { entities } from "@/entities";
+import { Module, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+
+@Module({
+  imports: [
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          type: "postgres",
+          host: configService.get<string>("POSTGRES_HOST"),
+          port: configService.get<number>("POSTGRES_PORT"),
+          username: configService.get<string>("POSTGRES_USER"),
+          password: configService.get<string>("POSTGRES_PASSWORD"),
+          database: configService.get<string>("POSTGRES_DB"),
+          autoLoadEntities: true,
+          synchronize: true,
+          dropSchema: true,
+          entities: entities,
+        };
+      },
+    }),
+  ],
+  exports: [],
+  providers: [],
+})
+export class PostgresModule implements OnModuleInit {
+  onModuleInit() {}
+}

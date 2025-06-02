@@ -1,3 +1,3 @@
-export * from "./config.module"
-export * from "./service"
-export * from "./swagger"
+export * from "./config.module";
+export * from "./service";
+export * from "./swagger";
