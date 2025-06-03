@@ -8,7 +8,7 @@ export class ValidationErrorResponse {
   error: string;
 
   @ApiProperty({
-    type: [String],
+    type: String,
   })
-  message: string[];
+  message: string;
 }

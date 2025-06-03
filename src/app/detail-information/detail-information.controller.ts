@@ -10,7 +10,12 @@ import {
 import { DetailInformationService } from "./detail-information.service";
 import { CreateDetailInformationDto } from "./dto/create-detail-information.dto";
 import { UpdateDetailInformationDto } from "./dto/update-detail-information.dto";
-import { ApiBadGatewayResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBadGatewayResponse,
+  ApiBadRequestResponse,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { DetailInformationResponse } from "./dto/response/base.response";
 import { ApiResponseWrapperSingle } from "@/common/decorators/api-response-wrapper-single.decorator";
 import { ApiResponseWrapperArray } from "@/common/decorators/api-response-wrapper-array.decorator";
@@ -25,7 +30,7 @@ export class DetailInformationController {
 
   @Post()
   @ApiResponseWrapperSingle(DetailInformationResponse)
-  @ApiBadGatewayResponse({
+  @ApiBadRequestResponse({
     description: "Failed to create detail information.",
     type: ValidationErrorResponse,
   })
