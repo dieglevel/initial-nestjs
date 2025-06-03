@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { SwaggerBuilder } from "./common/config";
 import { informationServerLog } from "./utils/information-server/information-server.log";
 import { ValidationPipe } from "@nestjs/common";
+import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +19,14 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors();
   app.setGlobalPrefix("api");
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   const documentFactory = () =>
     SwaggerModule.createDocument(app, SwaggerBuilder);

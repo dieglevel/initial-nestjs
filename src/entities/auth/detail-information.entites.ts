@@ -20,7 +20,7 @@ export class DetailInformationEntity
   @Column({ type: "varchar", nullable: true })
   thumbnailUrl: string;
 
-  @Column({ type: "bool", nullable: true })
+  @Column({ type: "bool", default: true })
   gender: boolean;
 
   @OneToOne(() => AccountEntity, (account) => account.detailInformation)

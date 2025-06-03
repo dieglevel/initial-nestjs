@@ -10,6 +10,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       useFactory: (configService: ConfigService) => {
         return {
           type: "postgres",
+          ssl: {
+            rejectUnauthorized: false,
+          },
           host: configService.get<string>("POSTGRES_HOST"),
           port: configService.get<number>("POSTGRES_PORT"),
           username: configService.get<string>("POSTGRES_USER"),

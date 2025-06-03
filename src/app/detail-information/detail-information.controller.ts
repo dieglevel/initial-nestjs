@@ -10,28 +10,24 @@ import {
 import { DetailInformationService } from "./detail-information.service";
 import { CreateDetailInformationDto } from "./dto/create-detail-information.dto";
 import { UpdateDetailInformationDto } from "./dto/update-detail-information.dto";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
-import { BaseController } from "@/common/base/base-controller";
+import { ApiBadGatewayResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DetailInformationResponse } from "./dto/response/base.response";
+import { ApiResponseWrapperSingle } from "@/common/decorators/api-response-wrapper-single.decorator";
+import { ApiResponseWrapperArray } from "@/common/decorators/api-response-wrapper-array.decorator";
+import { ValidationErrorResponse } from "@/common/decorators/dto/base-validation-error-response-dto";
 
 @ApiTags("Detail Information")
 @Controller("detail-information")
-export class DetailInformationController extends BaseController {
+export class DetailInformationController {
   constructor(
     private readonly detailInformationService: DetailInformationService,
-  ) {
-    super();
-  }
+  ) {}
 
   @Post()
-  @ApiResponse({
-    status: 201,
-    description: "Detail information created successfully",
-    type: DetailInformationResponse,
-  })
-  @ApiResponse({
-    status: 400,
-    description: "Bad Request",
+  @ApiResponseWrapperSingle(DetailInformationResponse)
+  @ApiBadGatewayResponse({
+    description: "Failed to create detail information.",
+    type: ValidationErrorResponse,
   })
   async create(@Body() createDetailInformationDto: CreateDetailInformationDto) {
     return await this.detailInformationService.create(
@@ -40,30 +36,35 @@ export class DetailInformationController extends BaseController {
   }
 
   @Get()
+  @ApiResponseWrapperArray(DetailInformationResponse)
   async findAll() {
-    return this.okResponse(await this.detailInformationService.findAll());
+    return await this.detailInformationService.findAll();
   }
 
   @Get(":id")
+  @ApiResponseWrapperSingle(DetailInformationResponse)
   async findOne(@Param("id") id: string) {
-    return this.okResponse(await this.detailInformationService.findOne(id));
+    return await this.detailInformationService.findOne(id);
   }
 
   @Patch(":id")
+  @ApiResponseWrapperSingle(DetailInformationResponse)
   async update(
     @Param("id") id: string,
     @Body() updateDetailInformationDto: UpdateDetailInformationDto,
   ) {
-    return this.okResponse(
-      await this.detailInformationService.update(
-        id,
-        updateDetailInformationDto,
-      ),
+    return await this.detailInformationService.update(
+      id,
+      updateDetailInformationDto,
     );
   }
 
   @Delete(":id")
+  @ApiResponse({
+    status: 200,
+    description: "Detail information successfully deleted.",
+  })
   async remove(@Param("id") id: string) {
-    return this.okResponse(await this.detailInformationService.remove(id));
+    return await this.detailInformationService.remove(id);
   }
 }
