@@ -1,4 +1,4 @@
-import { IBaseEntity } from "@/entities/interface/base/base.entities.interface";
+import { IBaseEntity } from "@/entities/interface/base.entity.interface";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class BaseEntitiesResponse implements Partial<IBaseEntity> {

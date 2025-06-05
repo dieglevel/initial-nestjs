@@ -1,7 +1,8 @@
-import { Column, Entity, OneToOne } from "typeorm";
-import { BaseEntity } from "../base";
-import { IAccountEntity } from "../interface/auth/account.entity.interface";
-import { DetailInformationEntity } from "./detail-information.entites";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import { IAccountEntity } from "../../../interface/auth/account.entity.interface";
+import { DetailInformationEntity } from "./detail-information.entity";
+import { BaseEntity } from "../../base.entity";
+import { RoleEntity } from "./role.entity";
 
 @Entity({ name: "account" })
 export class AccountEntity
@@ -24,4 +25,8 @@ export class AccountEntity
 
   @OneToOne(() => DetailInformationEntity)
   detailInformation: DetailInformationEntity;
+
+  @ManyToOne(() => RoleEntity, (role) => role.accounts)
+  @JoinColumn()
+  role: RoleEntity;
 }

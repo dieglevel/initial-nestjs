@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateDetailInformationDto } from "./dto/create-detail-information.dto";
 import { UpdateDetailInformationDto } from "./dto/update-detail-information.dto";
-import { DetailInformationEntity } from "@/entities/auth/detail-information.entites";
+import { DetailInformationEntity } from "@/entities/entity/implement/auth/detail-information.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { BaseService } from "@/common/base/base-service.base";

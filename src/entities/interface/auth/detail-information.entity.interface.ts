@@ -1,4 +1,4 @@
-import { IBaseEntity } from "../base/base.entities.interface";
+import { IBaseEntity } from "../base.entity.interface";
 
 export interface IDetailInformationEntity extends IBaseEntity {
   fullName: string;

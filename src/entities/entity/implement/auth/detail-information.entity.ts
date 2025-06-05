@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
-import { BaseEntity } from "../base";
-import { IDetailInformationEntity } from "../interface/auth/detail-information.entites.interface";
-import { AccountEntity } from "./account.entites";
+import { IDetailInformationEntity } from "../../../interface/auth/detail-information.entity.interface";
+import { AccountEntity } from "./account.entity";
+import { BaseEntity } from "../../base.entity";
 
 @Entity({ name: "detailInformation" })
 export class DetailInformationEntity

@@ -1,4 +1,4 @@
-import { IBaseEntity } from "../base/base.entities.interface";
+import { IBaseEntity } from "../base.entity.interface";
 
 export class IAccountEntity extends IBaseEntity {
   email: string;
