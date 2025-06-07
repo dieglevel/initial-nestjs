@@ -20,7 +20,9 @@ export class AuthController {
     description: "Account already exists.",
     type: ConflictResponse,
   })
-  public async register(@Body() dataRegister: CreateAccountDto) {
+  public async register(
+    @Body() dataRegister: CreateAccountDto,
+  ): Promise<CreateAccountResponse> {
     return await this.authService.register(dataRegister);
   }
 }

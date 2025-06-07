@@ -14,6 +14,8 @@ async function bootstrap() {
   const port = configService.get<number>("PORT") || 9999;
   const hostname = configService.get<string>("HOST") || "0.0.0.0";
   const env = configService.get<string>("NODE_ENV") || "development";
+  const dropSchema =
+    configService.get<boolean>("DATABASE_DROP_SCHEMA") || false;
 
   app.use(helmet());
   app.enableCors();
@@ -30,7 +32,7 @@ async function bootstrap() {
   });
 
   await app.listen(port, hostname, () => {
-    informationServerLog(port, hostname, env);
+    informationServerLog(port, hostname, env, dropSchema);
   });
 }
 

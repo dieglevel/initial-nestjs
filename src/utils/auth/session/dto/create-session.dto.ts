@@ -5,9 +5,10 @@ export class CreateSessionDto
   implements
     Pick<
       SessionEntity,
-      "accessToken" | "refreshToken" | "account" | "isRefreash"
+      "accessToken" | "refreshToken" | "account" | "isRefresh"
     >
 {
+  isRefresh: boolean;
   accessToken: string;
   refreshToken: string;
   account: AccountEntity;

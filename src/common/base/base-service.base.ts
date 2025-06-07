@@ -2,11 +2,11 @@ import { HttpException, HttpStatus } from "@nestjs/common";
 import { BaseError } from "./base-error.base";
 
 export class BaseService {
-  protected BadRequestException(message: string) {
+  protected BadRequestException(message: string): never {
     throw new BaseError("BadRequestException", HttpStatus.BAD_REQUEST, message);
   }
 
-  protected UnauthorizedException(message: string) {
+  protected UnauthorizedException(message: string): never {
     throw new BaseError(
       "UnauthorizedException",
       HttpStatus.UNAUTHORIZED,
@@ -14,7 +14,7 @@ export class BaseService {
     );
   }
 
-  protected PaymentRequiredException(message: string) {
+  protected PaymentRequiredException(message: string): never {
     throw new BaseError(
       "PaymentRequiredException",
       HttpStatus.PAYMENT_REQUIRED,
@@ -22,15 +22,15 @@ export class BaseService {
     );
   }
 
-  protected ForbiddenException(message: string) {
+  protected ForbiddenException(message: string): never {
     throw new BaseError("ForbiddenException", HttpStatus.FORBIDDEN, message);
   }
 
-  protected NotFoundException(message: string) {
+  protected NotFoundException(message: string): never {
     throw new BaseError("NotFoundException", HttpStatus.NOT_FOUND, message);
   }
 
-  protected MethodNotAllowedException(message: string) {
+  protected MethodNotAllowedException(message: string): never {
     throw new BaseError(
       "MethodNotAllowedException",
       HttpStatus.METHOD_NOT_ALLOWED,
@@ -38,7 +38,7 @@ export class BaseService {
     );
   }
 
-  protected NotAcceptableException(message: string) {
+  protected NotAcceptableException(message: string): never {
     throw new BaseError(
       "NotAcceptableException",
       HttpStatus.NOT_ACCEPTABLE,
@@ -46,7 +46,7 @@ export class BaseService {
     );
   }
 
-  protected ProxyAuthenticationRequiredException(message: string) {
+  protected ProxyAuthenticationRequiredException(message: string): never {
     throw new BaseError(
       "ProxyAuthenticationRequiredException",
       HttpStatus.PROXY_AUTHENTICATION_REQUIRED,
@@ -54,7 +54,7 @@ export class BaseService {
     );
   }
 
-  protected RequestTimeoutException(message: string) {
+  protected RequestTimeoutException(message: string): never {
     throw new BaseError(
       "RequestTimeoutException",
       HttpStatus.REQUEST_TIMEOUT,
@@ -62,15 +62,15 @@ export class BaseService {
     );
   }
 
-  protected ConflictException(message: string) {
+  protected ConflictException(message: string): never {
     throw new BaseError("ConflictException", HttpStatus.CONFLICT, message);
   }
 
-  protected GoneException(message: string) {
+  protected GoneException(message: string): never {
     throw new BaseError("GoneException", HttpStatus.GONE, message);
   }
 
-  protected LengthRequiredException(message: string) {
+  protected LengthRequiredException(message: string): never {
     throw new BaseError(
       "LengthRequiredException",
       HttpStatus.LENGTH_REQUIRED,
@@ -78,7 +78,7 @@ export class BaseService {
     );
   }
 
-  protected PreconditionFailedException(message: string) {
+  protected PreconditionFailedException(message: string): never {
     throw new BaseError(
       "PreconditionFailedException",
       HttpStatus.PRECONDITION_FAILED,
@@ -86,7 +86,7 @@ export class BaseService {
     );
   }
 
-  protected PayloadTooLargeException(message: string) {
+  protected PayloadTooLargeException(message: string): never {
     throw new BaseError(
       "PayloadTooLargeException",
       HttpStatus.PAYLOAD_TOO_LARGE,
@@ -94,7 +94,7 @@ export class BaseService {
     );
   }
 
-  protected URITooLongException(message: string) {
+  protected URITooLongException(message: string): never {
     throw new BaseError(
       "URITooLongException",
       HttpStatus.URI_TOO_LONG,
@@ -102,7 +102,7 @@ export class BaseService {
     );
   }
 
-  protected UnsupportedMediaTypeException(message: string) {
+  protected UnsupportedMediaTypeException(message: string): never {
     throw new BaseError(
       "UnsupportedMediaTypeException",
       HttpStatus.UNSUPPORTED_MEDIA_TYPE,
@@ -110,7 +110,7 @@ export class BaseService {
     );
   }
 
-  protected RequestedRangeNotSatisfiableException(message: string) {
+  protected RequestedRangeNotSatisfiableException(message: string): never {
     throw new BaseError(
       "RequestedRangeNotSatisfiableException",
       HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
@@ -118,7 +118,7 @@ export class BaseService {
     );
   }
 
-  protected ExpectationFailedException(message: string) {
+  protected ExpectationFailedException(message: string): never {
     throw new BaseError(
       "ExpectationFailedException",
       HttpStatus.EXPECTATION_FAILED,
@@ -126,7 +126,7 @@ export class BaseService {
     );
   }
 
-  protected ImATeapotException(message: string) {
+  protected ImATeapotException(message: string): never {
     throw new BaseError(
       "ImATeapotException",
       HttpStatus.I_AM_A_TEAPOT,
@@ -134,7 +134,7 @@ export class BaseService {
     );
   }
 
-  protected MisdirectedRequestException(message: string) {
+  protected MisdirectedRequestException(message: string): never {
     throw new BaseError(
       "MisdirectedRequestException",
       HttpStatus.MISDIRECTED,
@@ -142,7 +142,7 @@ export class BaseService {
     );
   }
 
-  protected UnprocessableEntityException(message: string) {
+  protected UnprocessableEntityException(message: string): never {
     throw new BaseError(
       "UnprocessableEntityException",
       HttpStatus.UNPROCESSABLE_ENTITY,
@@ -150,7 +150,7 @@ export class BaseService {
     );
   }
 
-  protected FailedDependencyException(message: string) {
+  protected FailedDependencyException(message: string): never {
     throw new BaseError(
       "FailedDependencyException",
       HttpStatus.FAILED_DEPENDENCY,
@@ -158,7 +158,7 @@ export class BaseService {
     );
   }
 
-  protected PreconditionRequiredException(message: string) {
+  protected PreconditionRequiredException(message: string): never {
     throw new BaseError(
       "PreconditionRequiredException",
       HttpStatus.PRECONDITION_REQUIRED,
@@ -166,7 +166,7 @@ export class BaseService {
     );
   }
 
-  protected TooManyRequestsException(message: string) {
+  protected TooManyRequestsException(message: string): never {
     throw new BaseError(
       "TooManyRequestsException",
       HttpStatus.TOO_MANY_REQUESTS,
@@ -174,7 +174,7 @@ export class BaseService {
     );
   }
 
-  protected InternalServerErrorException(message: string) {
+  protected InternalServerErrorException(message: string): never {
     throw new BaseError(
       "InternalServerErrorException",
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -182,7 +182,7 @@ export class BaseService {
     );
   }
 
-  protected NotImplementedException(message: string) {
+  protected NotImplementedException(message: string): never {
     throw new BaseError(
       "NotImplementedException",
       HttpStatus.NOT_IMPLEMENTED,
@@ -190,11 +190,11 @@ export class BaseService {
     );
   }
 
-  protected BadGatewayException(message: string) {
+  protected BadGatewayException(message: string): never {
     throw new BaseError("BadGatewayException", HttpStatus.BAD_GATEWAY, message);
   }
 
-  protected ServiceUnavailableException(message: string) {
+  protected ServiceUnavailableException(message: string): never {
     throw new BaseError(
       "ServiceUnavailableException",
       HttpStatus.SERVICE_UNAVAILABLE,
@@ -202,7 +202,7 @@ export class BaseService {
     );
   }
 
-  protected GatewayTimeoutException(message: string) {
+  protected GatewayTimeoutException(message: string): never {
     throw new BaseError(
       "GatewayTimeoutException",
       HttpStatus.GATEWAY_TIMEOUT,
@@ -210,7 +210,7 @@ export class BaseService {
     );
   }
 
-  protected HTTPVersionNotSupportedException(message: string) {
+  protected HTTPVersionNotSupportedException(message: string): never {
     throw new BaseError(
       "HTTPVersionNotSupportedException",
       HttpStatus.HTTP_VERSION_NOT_SUPPORTED,

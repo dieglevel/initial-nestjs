@@ -8,11 +8,4 @@ export class CreateAccountResponse
     OmitType(CreateAccountDto, ["password"]),
     BaseEntitiesResponse,
   )
-  implements Partial<IAccountEntity>
-{
-  @ApiProperty()
-  isVerify: boolean;
-
-  @ApiProperty()
-  isActive: boolean;
-}
+  implements Partial<IAccountEntity> {}

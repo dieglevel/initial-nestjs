@@ -10,6 +10,8 @@ import { CreateAccountDto } from "./dto/create-account";
 import { CreateAccountResponse } from "./dto/response";
 import { REGEX_EMAIL } from "@/common/validate";
 import * as bcrypt from "bcrypt";
+import { SendOtpCase, VerifyOtpCase } from "@/common/base/interfaces";
+import { CurrentUserDto } from "@/common/base/types";
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -28,7 +30,7 @@ export class AuthService extends BaseService {
 
   public async register(
     createAuthDto: CreateAccountDto,
-  ): Promise<CreateAccountResponse | undefined> {
+  ): Promise<CreateAccountResponse> {
     try {
       // ! STAGE 1: Check if email or username already exists
 
@@ -76,12 +78,20 @@ export class AuthService extends BaseService {
             id: account.id,
             email: account.email,
             username: account.username,
-            isActive: account.isActive,
-            isVerify: account.isVerify,
             createdAt: account.createdAt,
             updatedAt: account.updatedAt,
             isDeleted: account.isDeleted,
           };
+
+          const statusSendOtp = await this.otpService.sendOTP({
+            account: account,
+            case: "register",
+            typeSend: "gmail",
+          });
+
+          if (!statusSendOtp) {
+            this.BadGatewayException("Failed to send OTP");
+          }
 
           return response;
         }
@@ -93,12 +103,60 @@ export class AuthService extends BaseService {
     }
   }
 
-  async registerTransaction(accountModel: AccountEntity) {
+  async registerTransaction(
+    accountModel: AccountEntity,
+  ): Promise<AccountEntity> {
     return await this.entityManager.transaction(
       async (transactionalEntityManager) => {
         const account = await transactionalEntityManager.save(accountModel);
         return account;
       },
     );
+  }
+
+  // async sendOtp(
+  //   user: CurrentUserDto,
+  //   forFeature: VerifyOtpCase,
+  //   otp: string,
+  // ): Promise<string> {
+  //   try {
+  //     const account = await this.accountRepository.findOne({
+  //       where: { id: user.id },
+  //     });
+  //     if (!account) {
+  //       this.NotFoundException("Account not found");
+  //     }
+  //     await this.otpService.verifyOtp({
+  //       case: forFeature,
+  //       otp: otp,
+  //       account: account,
+  //     });
+  //     return "OTP sent successfully";
+  //   } catch (error) {
+  //     this.ThrowError(error);
+  //   }
+  // }
+
+  async verifyOtp(
+    user: CurrentUserDto,
+    forFeature: VerifyOtpCase,
+    type: SendOtpCase,
+  ): Promise<string> {
+    try {
+      const account = await this.accountRepository.findOne({
+        where: { id: user.id },
+      });
+      if (!account) {
+        this.NotFoundException("Account not found");
+      }
+      const otp = await this.otpService.sendOTP({
+        account: account,
+        case: forFeature,
+        typeSend: type,
+      });
+      return "OTP sent successfully";
+    } catch (error) {
+      this.ThrowError(error);
+    }
   }
 }

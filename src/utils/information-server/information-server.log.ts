@@ -2,39 +2,69 @@ export const informationServerLog = (
   port: number,
   hostname: string,
   env: string,
+  dropSchema: boolean,
 ) => {
   const green = "\x1b[32m";
   const cyan = "\x1b[36m";
   const reset = "\x1b[0m";
   const bold = "\x1b[1m";
+  const red = "\x1b[31m";
+  const yellow = "\x1b[33m";
+  const gray = "\x1b[90m";
 
-  const labelWidth = 18;
+  const labelWidth = 20;
 
-  // Dữ liệu dạng [icon, label, value]
+  const title = `${bold}${green}📢 Server Information${reset}`;
+
   const lines: [string, string, string][] = [
-    ["✅", "Server is", `${green}${bold}running${reset}`],
-    ["🌍", "Hostname:", `${cyan}${hostname}${reset}`],
-    ["🟢", "Port:", `${cyan}${port}${reset}`],
-    ["🚨", "Env:", `${cyan}${bold}${env}${reset}`],
-    ["🚀", "Url:", `${cyan}http://${hostname}:${port}${reset}`],
-    ["📄", "Swagger:", `${cyan}http://${hostname}:${port}/api${reset}`],
+    ["✅", `Server is`, `${green}${bold}running${reset}`],
+    ["🌍", `Hostname:`, `${cyan}${hostname}${reset}`],
+    ["🟢", `Port:`, `${cyan}${port}${reset}`],
+    ["🚨", `Env:`, `${cyan}${bold}${env}${reset}`],
+    ["🚀", `Url:`, `${cyan}http://${hostname}:${port}${reset}`],
+    ["📄", `Swagger:`, `${cyan}http://${hostname}:${port}/api${reset}`],
+    ["🛑", `Redis:`, `${green}${bold}connected${reset}`],
+    ["💾", `Database:`, `${green}${bold}connected${reset}`],
+    [
+      "🗑️",
+      ` Drop Schema:`,
+      `${dropSchema ? `${red}${bold}Yes` : `${green}${bold}No`}${reset}`,
+    ],
   ];
 
-  // Tính độ dài tối đa để tạo khung
+  // Tính độ dài lớn nhất (bỏ escape code khi tính độ dài)
+  // eslint-disable-next-line no-control-regex
+  const stripAnsi = (str: string) => str.replace(/\u001b\[[0-9;]*m/g, "");
   const contentWidth = Math.max(
     ...lines.map(
       ([icon, label, value]) =>
-        `${icon} ${label.padEnd(labelWidth)} ${value}`.length,
+        stripAnsi(`${icon} ${label.padEnd(labelWidth)} ${value}`).length,
     ),
+    stripAnsi(title).length,
   );
   const boxWidth = contentWidth + 4;
 
-  // In khung
-  console.log(`${green}┏${"━".repeat(boxWidth - 2)}┓`);
+  const drawLine = (left: string, mid: string, right: string) =>
+    `${green}${left}${mid.repeat(boxWidth - 2)}${right}${reset}`;
+
+  const printCenter = (text: string) => {
+    const stripped = stripAnsi(text);
+    const padding = contentWidth - stripped.length;
+    const leftPad = Math.floor(padding / 2);
+    const rightPad = Math.ceil(padding / 2);
+    return ` ${" ".repeat(leftPad)}${text}${" ".repeat(rightPad)} `;
+  };
+
+  console.log(drawLine("╭", "─", "╮"));
+  console.log(printCenter(title));
+  console.log(drawLine("├", "─", "┤"));
+
   lines.forEach(([icon, label, value]) => {
-    const left = `${icon} ${label.padEnd(labelWidth)} ${value}`;
-    const padding = " ".repeat(contentWidth - left.length);
-    console.log(` ${left}${padding} `);
+    const rawLine = `${icon} ${label.padEnd(labelWidth)} ${value}`;
+    const visibleLength = stripAnsi(rawLine).length;
+    const padding = " ".repeat(contentWidth - visibleLength);
+    console.log(` ${rawLine}${padding} `);
   });
-  console.log(`${green}┗${"━".repeat(boxWidth - 2)}┛${reset}`);
+
+  console.log(drawLine("╰", "─", "╯"));
 };

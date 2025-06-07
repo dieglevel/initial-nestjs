@@ -8,16 +8,24 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     this.client = new Redis({
       host: process.env.REDIS_HOST || "localhost",
       port: parseInt(process.env.REDIS_PORT || "6379"),
+      retryStrategy: (times) => Math.min(times * 100, 3000),
+      reconnectOnError: (err) =>
+        /READONLY|ETIMEDOUT|ECONNRESET/.test(err.message),
+      maxRetriesPerRequest: 5,
     });
-    if (this.client) {
-      console.log("Redis connected");
-      await this.client.set("test", "test", "EX", 1000);
-    } else {
-      console.log("Redis connection failed");
-    }
+
+    this.client.on("error", (err) => console.error("Redis error:", err));
+    this.client.on("end", () => console.warn("Redis connection closed"));
+    this.client.on("reconnecting", () => console.warn("Redis reconnecting..."));
+
+    await this.client.set("test", "test", "EX", 1000);
   }
+
   async onModuleDestroy() {
-    await this.client.quit();
+    if (this.client.status === "ready" || this.client.status === "connecting") {
+      await this.client.quit();
+      console.log("Redis connection closed gracefully.");
+    }
   }
 
   //string

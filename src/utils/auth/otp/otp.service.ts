@@ -14,7 +14,7 @@ export class OtpService extends BaseService {
     super();
   }
 
-  async sendOTP(dto: SendOTPDto) {
+  async sendOTP(dto: SendOTPDto): Promise<boolean> {
     try {
       const { typeSend, account, case: otpCase } = dto;
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -29,7 +29,7 @@ export class OtpService extends BaseService {
     }
   }
 
-  async verifyOtp(dto: VerifyOtpDto) {
+  async verifyOtp(dto: VerifyOtpDto): Promise<boolean> {
     try {
       const { account, otp, case: otpCase } = dto;
 
