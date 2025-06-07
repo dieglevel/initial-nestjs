@@ -1,6 +1,6 @@
 import { FindOneOptions, FindOptionsWhere, Repository } from "typeorm";
 import { FindEntitiesOptions } from "./find-entity.query";
-import { IBaseEntity } from "@/entities/interface/base.entity.interface";
+import { IBaseEntity } from "@/entities/interface";
 
 export function FindOneEntity<T extends IBaseEntity>(
   repo: Repository<T>,

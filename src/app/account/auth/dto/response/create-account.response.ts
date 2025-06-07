@@ -1,12 +1,7 @@
-import {
-  ApiProperty,
-  IntersectionType,
-  OmitType,
-  PartialType,
-} from "@nestjs/swagger";
+import { ApiProperty, IntersectionType, OmitType } from "@nestjs/swagger";
 import { CreateAccountDto } from "../create-account";
-import { BaseEntitiesResponse } from "@/common/base/base-entities-response.swagger";
-import { IAccountEntity } from "@/entities/interface/auth/account.entity.interface";
+import { BaseEntitiesResponse } from "@/common/base";
+import { IAccountEntity } from "@/entities/interface/auth";
 
 export class CreateAccountResponse
   extends IntersectionType(

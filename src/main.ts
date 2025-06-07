@@ -4,9 +4,8 @@ import { SwaggerModule } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
 import helmet from "helmet";
 import { swaggerBuilder, validatePipeConfig } from "./common/config";
-import { informationServerLog } from "./utils/information-server/information-server.log";
-import { BadRequestException, ValidationPipe } from "@nestjs/common";
-import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
+import { TransformInterceptor } from "./common/interceptors";
+import { informationServerLog } from "./utils/information-server";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

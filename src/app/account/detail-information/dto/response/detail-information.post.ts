@@ -1,4 +1,4 @@
-import { IDetailInformationEntity } from "@/entities/interface/auth/detail-information.entity.interface";
+import { IDetailInformationEntity } from "@/entities/interface/auth";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class DetailInformationPostResponse

@@ -1,7 +1,7 @@
-import { BaseService } from "@/common/base/base-service.base";
+import { BaseService } from "@/common/base";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService as JwtServiceNestJS } from "@nestjs/jwt";
-import { IPayload } from "./payload/payload.interface";
+import { IPayload } from "./payload";
 
 @Injectable()
 export class JwtService extends BaseService {

@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany } from "typeorm";
 import { AccountEntity } from "./account.entity";
 import { BaseEntity } from "../../base.entity";
-import { IRoleEntity } from "@/entities/interface/auth/role.entity.interface";
-import { ROLE_ENUM } from "@/entities/enum/role.enum";
+import { ROLE_ENUM } from "@/entities/enum";
+import { IRoleEntity } from "@/entities/interface/auth";
 
 @Entity("role")
 export class RoleEntity extends BaseEntity<RoleEntity> implements IRoleEntity {

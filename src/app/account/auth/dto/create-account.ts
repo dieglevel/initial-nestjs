@@ -1,4 +1,4 @@
-import { IAccountEntity } from "@/entities/interface/auth/account.entity.interface";
+import { IAccountEntity } from "@/entities/interface/auth";
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";

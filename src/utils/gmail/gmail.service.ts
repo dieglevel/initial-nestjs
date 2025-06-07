@@ -1,10 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { MailerService } from "@nestjs-modules/mailer";
 import { ConfigService } from "@nestjs/config";
 import * as brevo from "@getbrevo/brevo";
 import { SendSmtpEmail, TransactionalEmailsApi } from "@getbrevo/brevo";
-import { BaseService } from "@/common/base/base-service.base";
-import { AccountEntity } from "@/entities/entity/implement/auth/account.entity";
+import { BaseService } from "@/common/base";
+import { AccountEntity } from "@/entities/entity/implement/auth";
 @Injectable()
 export class GmailService extends BaseService {
   private readonly apiInstance: TransactionalEmailsApi;

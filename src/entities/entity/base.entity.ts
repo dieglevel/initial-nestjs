@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { IBaseEntity } from "../interface/base.entity.interface";
+import { IBaseEntity } from "../interface";
 
 export class BaseEntity<T> implements IBaseEntity {
   @PrimaryGeneratedColumn("uuid")

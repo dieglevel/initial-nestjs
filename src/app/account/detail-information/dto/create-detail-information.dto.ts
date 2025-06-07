@@ -1,4 +1,4 @@
-import { IDetailInformationEntity } from "@/entities/interface/auth/detail-information.entity.interface";
+import { IDetailInformationEntity } from "@/entities/interface/auth";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsDate, IsOptional, IsString } from "class-validator";

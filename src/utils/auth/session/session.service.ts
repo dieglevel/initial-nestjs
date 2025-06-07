@@ -1,9 +1,9 @@
-import { BaseService } from "@/common/base/base-service.base";
-import { SessionEntity } from "@/entities/entity/implement/auth/session.entity";
+import { BaseService } from "@/common/base";
+import { SessionEntity } from "@/entities/entity/implement/auth";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateSessionDto } from "./dto/create-session.dto";
+import { CreateSessionDto } from "./dto";
 
 @Injectable()
 export class SessionService extends BaseService {

@@ -1,15 +1,14 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "./common/config";
 import { DatabaseModule } from "./common/database";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { LoggerMiddleware } from "./common/middleware";
 import { DetailInformationModule } from "./app/account/detail-information";
-import { AuthModule } from "./app/account/auth/auth.module";
 import { RedisModule } from "./utils/redis";
-import { GmailModule } from "./utils/gmail/gmail.module";
-import { OtpModule } from "./utils/auth/otp/otp.module";
 import { SessionModule } from "./utils/auth/session/session.module";
-import { JwtModule } from "./utils/auth/jwt/jwt.module";
+import { AuthModule } from "./app/account/auth";
+import { GmailModule } from "./utils/gmail";
+import { OtpModule } from "./utils/auth/otp";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [

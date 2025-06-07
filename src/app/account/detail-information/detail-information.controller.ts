@@ -16,10 +16,12 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { DetailInformationResponse } from "./dto/response/base.response";
-import { ApiResponseWrapperSingle } from "@/common/decorators/api-response-wrapper-single.decorator";
-import { ApiResponseWrapperArray } from "@/common/decorators/api-response-wrapper-array.decorator";
-import { BadRequestResponse } from "@/common/base/base-response-error.swagger";
+import {
+  ApiResponseWrapperArray,
+  ApiResponseWrapperSingle,
+} from "@/common/decorators";
+import { DetailInformationResponse } from "./dto/response";
+import { BadRequestResponse } from "@/common/base";
 
 @ApiTags("Detail Information")
 @Controller("detail-information")

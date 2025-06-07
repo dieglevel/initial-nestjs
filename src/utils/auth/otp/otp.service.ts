@@ -1,10 +1,9 @@
-import { BaseService } from "@/common/base/base-service.base";
+import { BaseService } from "@/common/base";
 import { VerifyOtpCase } from "@/common/base/interfaces";
+import { GmailService } from "@/utils/gmail";
 import { RedisService } from "@/utils/redis";
 import { Injectable } from "@nestjs/common";
-import { SendOTPDto } from "./dto/send-otp.dto";
-import { VerifyOtpDto } from "./dto/verify-otp.dto";
-import { GmailService } from "@/utils/gmail/gmail.service";
+import { SendOTPDto, VerifyOtpDto } from "./dto";
 
 @Injectable()
 export class OtpService extends BaseService {

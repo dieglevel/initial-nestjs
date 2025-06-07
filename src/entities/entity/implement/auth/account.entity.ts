@@ -6,9 +6,9 @@ import {
   OneToMany,
   OneToOne,
 } from "typeorm";
-import { IAccountEntity } from "../../../interface/auth/account.entity.interface";
-import { DetailInformationEntity } from "./detail-information.entity";
+import { IAccountEntity } from "@/entities/interface/auth";
 import { BaseEntity } from "../../base.entity";
+import { DetailInformationEntity } from "./detail-information.entity";
 import { RoleEntity } from "./role.entity";
 import { SessionEntity } from "./session.entity";
 

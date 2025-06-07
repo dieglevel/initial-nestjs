@@ -1,15 +1,10 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import {
-  ApiBadRequestResponse,
-  ApiConflictResponse,
-  ApiOperation,
-  ApiResponse,
-} from "@nestjs/swagger";
-import { CreateAccountDto } from "./dto/create-account";
-import { ApiResponseWrapperSingle } from "@/common/decorators/api-response-wrapper-single.decorator";
-import { CreateAccountResponse } from "./dto/response/create-account.response";
+import { ApiBadRequestResponse, ApiConflictResponse } from "@nestjs/swagger";
 import { BadRequestResponse, ConflictResponse } from "@/common/base";
+import { CreateAccountResponse } from "./dto/response";
+import { ApiResponseWrapperSingle } from "@/common/decorators";
+import { CreateAccountDto } from "./dto";
 
 @Controller("auth")
 export class AuthController {

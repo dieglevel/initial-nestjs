@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import { BaseEntity } from "../../base.entity";
-import { ISessionEntity } from "@/entities/interface/auth/session.entity.interface";
+import { ISessionEntity } from "@/entities/interface/auth";
 import { AccountEntity } from "./account.entity";
 
 @Entity({ name: "session" })
@@ -15,7 +15,7 @@ export class SessionEntity
   refreshToken: string;
 
   @Column({ type: "boolean", default: false })
-  isRefreash: boolean;
+  isRefresh: boolean;
 
   @ManyToOne(() => AccountEntity, (account) => account.sessions)
   account: AccountEntity;
