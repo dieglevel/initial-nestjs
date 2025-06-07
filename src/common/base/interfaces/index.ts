@@ -1,1 +1,2 @@
-export * from "./message-response.interface.response";
+export * from "./common.interface";
+export * from "./otp.interface";

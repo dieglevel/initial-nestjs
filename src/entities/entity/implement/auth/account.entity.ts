@@ -1,19 +1,30 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from "typeorm";
 import { IAccountEntity } from "../../../interface/auth/account.entity.interface";
 import { DetailInformationEntity } from "./detail-information.entity";
 import { BaseEntity } from "../../base.entity";
 import { RoleEntity } from "./role.entity";
+import { SessionEntity } from "./session.entity";
 
 @Entity({ name: "account" })
 export class AccountEntity
   extends BaseEntity<AccountEntity>
   implements IAccountEntity
 {
-  @Column({ type: "varchar", nullable: true })
+  @Column({ type: "varchar", nullable: false })
+  username: string;
+
+  @Column({ type: "varchar", nullable: false })
   email: string;
 
-  @Column({ type: "varchar", nullable: true })
-  phone: string;
+  // @Column({ type: "varchar", nullable: true })
+  // phone: string;
 
   @Column({ type: "varchar", nullable: false })
   password: string;
@@ -29,4 +40,7 @@ export class AccountEntity
   @ManyToOne(() => RoleEntity, (role) => role.accounts)
   @JoinColumn()
   role: RoleEntity;
+
+  @OneToMany(() => SessionEntity, (session) => session.account)
+  sessions: SessionEntity[];
 }

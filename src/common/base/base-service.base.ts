@@ -218,7 +218,7 @@ export class BaseService {
     );
   }
 
-  protected ThrowError(error: any) {
+  protected ThrowError(error: any): never {
     console.log("Error", error);
     if (error instanceof HttpException) {
       const response = error.getResponse() as unknown as {

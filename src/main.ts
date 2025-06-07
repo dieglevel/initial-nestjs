@@ -3,9 +3,9 @@ import { AppModule } from "./app.module";
 import { SwaggerModule } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
 import helmet from "helmet";
-import { SwaggerBuilder } from "./common/config";
+import { swaggerBuilder, validatePipeConfig } from "./common/config";
 import { informationServerLog } from "./utils/information-server/information-server.log";
-import { ValidationPipe } from "@nestjs/common";
+import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
 
 async function bootstrap() {
@@ -18,18 +18,12 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors();
-  app.setGlobalPrefix("api");
+  app.setGlobalPrefix(process.env.API_PREFIX || "api");
   app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  app.useGlobalPipes(validatePipeConfig);
 
   const documentFactory = () =>
-    SwaggerModule.createDocument(app, SwaggerBuilder);
+    SwaggerModule.createDocument(app, swaggerBuilder);
 
   SwaggerModule.setup("api", app, documentFactory, {
     jsonDocumentUrl: "swagger/json",
