@@ -2,7 +2,7 @@ import { BadRequestException, ValidationPipe } from "@nestjs/common";
 
 export const validatePipeConfig = new ValidationPipe({
   whitelist: true,
-  forbidNonWhitelisted: true,
+  forbidNonWhitelisted: false,
   transform: true,
   exceptionFactory: (errors) => {
     const messages = errors

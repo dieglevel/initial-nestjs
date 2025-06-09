@@ -1,11 +1,15 @@
 import { ApiProperty, IntersectionType, OmitType } from "@nestjs/swagger";
-import { CreateAccountDto } from "../create-account";
 import { BaseEntitiesResponse } from "@/common/base";
 import { IAccountEntity } from "@/entities/interface/auth";
+import { CreateAccountRequest } from "../request";
 
 export class CreateAccountResponse
   extends IntersectionType(
-    OmitType(CreateAccountDto, ["password"]),
+    OmitType(CreateAccountRequest, ["password"]),
     BaseEntitiesResponse,
   )
-  implements Partial<IAccountEntity> {}
+  implements Partial<IAccountEntity>
+{
+  @ApiProperty()
+  otpToken: string;
+}

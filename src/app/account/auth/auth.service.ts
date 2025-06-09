@@ -1,17 +1,34 @@
 import { BaseService } from "@/common/base";
-import { AccountEntity } from "@/entities/entity/implement/auth/account.entity";
 import { JwtService } from "@/utils/auth/jwt";
 import { OtpService } from "@/utils/auth/otp";
 import { SessionService } from "@/utils/auth/session";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
-import { CreateAccountDto } from "./dto/create-account";
-import { CreateAccountResponse } from "./dto/response";
 import { REGEX_EMAIL } from "@/common/validate";
-import * as bcrypt from "bcrypt";
-import { SendOtpCase, VerifyOtpCase } from "@/common/base/interfaces";
-import { CurrentUserDto } from "@/common/base/types";
+
+import {
+  CreateAccountRequest,
+  ResendOtpRequest,
+  VerifyForgotPasswordOtpRequest,
+  VerifyOtpRequest,
+  VerifyRegisterOtpRequest,
+} from "./dto/request";
+import {
+  AccountEntity,
+  DetailInformationEntity,
+  RoleEntity,
+} from "@/entities/entity/implement/auth";
+import {
+  CreateAccountResponse,
+  ResendOtpResponse,
+  VerifyForgotPasswordOtpResponse,
+  VerifyOtpResponse,
+  VerifyRegisterOtpResponse,
+} from "./dto";
+import { generatePassword } from "@/utils/password/generate-password";
+import { RedisService } from "@/utils/redis";
+import { ROLE_ENUM } from "@/entities/enum";
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -19,28 +36,32 @@ export class AuthService extends BaseService {
     @InjectRepository(AccountEntity)
     private readonly accountRepository: Repository<AccountEntity>,
 
+    @InjectRepository(RoleEntity)
+    private readonly roleRepository: Repository<RoleEntity>,
+
     private readonly sessionService: SessionService,
 
     private entityManager: EntityManager,
     private jwtService: JwtService,
     private otpService: OtpService,
+    private redisService: RedisService,
   ) {
     super();
   }
 
   public async register(
-    createAuthDto: CreateAccountDto,
+    dto: CreateAccountRequest,
   ): Promise<CreateAccountResponse> {
     try {
       // ! STAGE 1: Check if email or username already exists
 
-      if (createAuthDto?.email && REGEX_EMAIL.test(createAuthDto.email)) {
+      if (dto?.email && REGEX_EMAIL.test(dto.email)) {
         const foundAccountByEmail = await this.accountRepository.findOne({
-          where: { email: createAuthDto.email },
+          where: { email: dto.email },
         });
 
         const foundAccountByUsername = await this.accountRepository.findOne({
-          where: { username: createAuthDto.username },
+          where: { username: dto.username },
         });
 
         const foundAccount = foundAccountByEmail || foundAccountByUsername;
@@ -49,14 +70,10 @@ export class AuthService extends BaseService {
         if (foundAccount != null) {
           this.ConflictException("This account existed");
         } else {
-          const salt = await bcrypt.genSalt(10);
-          const passwordHashed = await bcrypt.hash(
-            createAuthDto.password,
-            salt,
-          );
+          const passwordHashed = await generatePassword(dto.password);
 
           const accountModel = this.accountRepository.create({
-            ...createAuthDto,
+            ...dto,
             isVerify: false, //NOTE xóa khi đưa lên production
             isActive: false, // NOTE : xóa khi đưa lên production
             password: passwordHashed,
@@ -66,13 +83,13 @@ export class AuthService extends BaseService {
 
           // ! STAGE 3: Send OTP to email
           const statusSendEmail = await this.otpService.sendOTP({
-            account: account,
+            accountId: account.id,
             case: "register",
             typeSend: "gmail",
           });
 
           if (!statusSendEmail) {
-            this.BadGatewayException("Failed to send OTP");
+            this.BadRequestException("Failed to send OTP");
           }
           const response: CreateAccountResponse = {
             id: account.id,
@@ -81,22 +98,17 @@ export class AuthService extends BaseService {
             createdAt: account.createdAt,
             updatedAt: account.updatedAt,
             isDeleted: account.isDeleted,
+            otpToken: statusSendEmail,
           };
 
-          const statusSendOtp = await this.otpService.sendOTP({
-            account: account,
-            case: "register",
-            typeSend: "gmail",
-          });
-
-          if (!statusSendOtp) {
-            this.BadGatewayException("Failed to send OTP");
+          if (!statusSendEmail) {
+            this.BadRequestException("Failed to send OTP");
           }
 
           return response;
         }
       } else {
-        this.BadGatewayException("Wrong format email");
+        this.BadRequestException("Wrong format email");
       }
     } catch (error) {
       this.ThrowError(error);
@@ -107,54 +119,147 @@ export class AuthService extends BaseService {
     accountModel: AccountEntity,
   ): Promise<AccountEntity> {
     return await this.entityManager.transaction(
-      async (transactionalEntityManager) => {
-        const account = await transactionalEntityManager.save(accountModel);
-        return account;
+      async (entityManager: EntityManager) => {
+        const role = await this.roleRepository.findOne({
+          where: { name: ROLE_ENUM.CUSTOMER },
+        });
+
+        if (!role) {
+          this.NotFoundException("Role not found");
+        }
+
+        const accountCreate = entityManager.save(AccountEntity, {
+          ...accountModel,
+          role: role,
+        });
+
+        const detailInformation = entityManager.save(DetailInformationEntity, {
+          account: await accountCreate,
+        });
+
+        return accountCreate;
       },
     );
   }
 
-  // async sendOtp(
-  //   user: CurrentUserDto,
-  //   forFeature: VerifyOtpCase,
-  //   otp: string,
-  // ): Promise<string> {
-  //   try {
-  //     const account = await this.accountRepository.findOne({
-  //       where: { id: user.id },
-  //     });
-  //     if (!account) {
-  //       this.NotFoundException("Account not found");
-  //     }
-  //     await this.otpService.verifyOtp({
-  //       case: forFeature,
-  //       otp: otp,
-  //       account: account,
-  //     });
-  //     return "OTP sent successfully";
-  //   } catch (error) {
-  //     this.ThrowError(error);
-  //   }
-  // }
-
-  async verifyOtp(
-    user: CurrentUserDto,
-    forFeature: VerifyOtpCase,
-    type: SendOtpCase,
-  ): Promise<string> {
+  async resendOtp(dto: ResendOtpRequest): Promise<ResendOtpResponse> {
     try {
       const account = await this.accountRepository.findOne({
-        where: { id: user.id },
+        where: [{ email: dto.identifier }, { username: dto.identifier }],
+      });
+
+      if (!account) {
+        this.NotFoundException("Account not found");
+      }
+
+      const removeOtp = await this.otpService.removeOtp({
+        accountId: account.id,
+        case: dto.case,
+      });
+
+      if (!removeOtp) {
+        this.BadRequestException("Failed to remove existing OTP");
+      }
+
+      const otp = await this.otpService.sendOTP({
+        accountId: account.id,
+        case: dto.case,
+        typeSend: "gmail",
+      });
+
+      if (!otp) {
+        this.BadRequestException("Failed to send OTP");
+      }
+
+      return {
+        otpToken: otp,
+      };
+    } catch (error) {
+      this.ThrowError(error);
+    }
+  }
+
+  async verifyOtp(
+    authHeader: string,
+    dto: VerifyOtpRequest,
+  ): Promise<VerifyOtpResponse> {
+    try {
+      const isVerify = await this.otpService.verifyOtp(authHeader, dto.otp);
+
+      if (!isVerify) {
+        this.UnauthorizedException("Invalid OTP token");
+      }
+
+      const payload = await this.jwtService.verifyOtpToken(authHeader);
+
+      const account = await this.accountRepository.findOne({
+        where: { id: payload.accountId },
+      });
+
+      if (!account) {
+        this.NotFoundException("Account not found");
+      }
+      if (payload.type === "register") {
+        await this.accountRepository.save({
+          ...account,
+          isVerify: true,
+          isActive: true,
+        });
+        return {
+          otpTokenSuccess: "",
+        };
+      }
+
+      const otpTokenSuccess = await this.otpService.generateSuccessOtpToken(
+        account.id,
+        payload.type,
+      );
+
+      return {
+        otpTokenSuccess: otpTokenSuccess,
+      };
+    } catch (error) {
+      this.ThrowError(error);
+    }
+  }
+
+  async verifyForgotPasswordOtp(
+    authHeader: string,
+    dto: VerifyForgotPasswordOtpRequest,
+  ): Promise<VerifyForgotPasswordOtpResponse> {
+    try {
+      const payload = await this.jwtService.verifyOtpTokenSuccess(authHeader);
+
+      const verify = await this.otpService.verifySuccessOtpToken(authHeader);
+
+      if (!verify) {
+        this.UnauthorizedException("Invalid OTP token");
+      }
+
+      if (!payload) {
+        this.UnauthorizedException("Invalid Token");
+      }
+
+      const account = await this.accountRepository.findOne({
+        where: { id: payload.accountId },
       });
       if (!account) {
         this.NotFoundException("Account not found");
       }
-      const otp = await this.otpService.sendOTP({
-        account: account,
-        case: forFeature,
-        typeSend: type,
+
+      if (dto.password !== dto.repassword) {
+        this.BadRequestException("Password and Repassword do not match");
+      }
+
+      // Update account password
+      await this.accountRepository.save({
+        ...account,
+        password: await generatePassword(dto.password),
       });
-      return "OTP sent successfully";
+
+      return {
+        success: true,
+      };
     } catch (error) {
       this.ThrowError(error);
     }

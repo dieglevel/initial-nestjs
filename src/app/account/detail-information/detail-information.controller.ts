@@ -30,48 +30,48 @@ export class DetailInformationController {
     private readonly detailInformationService: DetailInformationService,
   ) {}
 
-  @Post()
-  @ApiResponseWrapperSingle(DetailInformationResponse)
-  @ApiBadRequestResponse({
-    description: "Failed to create detail information.",
-    type: BadRequestResponse,
-  })
-  async create(@Body() createDetailInformationDto: CreateDetailInformationDto) {
-    return await this.detailInformationService.create(
-      createDetailInformationDto,
-    );
-  }
+  // @Post()
+  // @ApiResponseWrapperSingle(DetailInformationResponse)
+  // @ApiBadRequestResponse({
+  //   description: "Failed to create detail information.",
+  //   type: BadRequestResponse,
+  // })
+  // async create(@Body() createDetailInformationDto: CreateDetailInformationDto) {
+  //   return await this.detailInformationService.create(
+  //     createDetailInformationDto,
+  //   );
+  // }
 
-  @Get()
-  @ApiResponseWrapperArray(DetailInformationResponse)
-  async findAll() {
-    return await this.detailInformationService.findAll();
-  }
+  // @Get()
+  // @ApiResponseWrapperArray(DetailInformationResponse)
+  // async findAll() {
+  //   return await this.detailInformationService.findAll();
+  // }
 
-  @Get(":id")
-  @ApiResponseWrapperSingle(DetailInformationResponse)
-  async findOne(@Param("id") id: string) {
-    return await this.detailInformationService.findOne(id);
-  }
+  // @Get(":id")
+  // @ApiResponseWrapperSingle(DetailInformationResponse)
+  // async findOne(@Param("id") id: string) {
+  //   return await this.detailInformationService.findOne(id);
+  // }
 
-  @Patch(":id")
-  @ApiResponseWrapperSingle(DetailInformationResponse)
-  async update(
-    @Param("id") id: string,
-    @Body() updateDetailInformationDto: UpdateDetailInformationDto,
-  ) {
-    return await this.detailInformationService.update(
-      id,
-      updateDetailInformationDto,
-    );
-  }
+  // @Patch(":id")
+  // @ApiResponseWrapperSingle(DetailInformationResponse)
+  // async update(
+  //   @Param("id") id: string,
+  //   @Body() updateDetailInformationDto: UpdateDetailInformationDto,
+  // ) {
+  //   return await this.detailInformationService.update(
+  //     id,
+  //     updateDetailInformationDto,
+  //   );
+  // }
 
-  @Delete(":id")
-  @ApiResponse({
-    status: 200,
-    description: "Detail information successfully deleted.",
-  })
-  async remove(@Param("id") id: string) {
-    return await this.detailInformationService.remove(id);
-  }
+  // @Delete(":id")
+  // @ApiResponse({
+  //   status: 200,
+  //   description: "Detail information successfully deleted.",
+  // })
+  // async remove(@Param("id") id: string) {
+  //   return await this.detailInformationService.remove(id);
+  // }
 }

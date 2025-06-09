@@ -1,7 +1,8 @@
 import { BaseService } from "@/common/base";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService as JwtServiceNestJS } from "@nestjs/jwt";
-import { IPayload } from "./payload";
+import { IOtpPayload, IPayload } from "./payload";
+import { SendOtpCase, VerifyOtpCase } from "@/common/base/interfaces";
 
 @Injectable()
 export class JwtService extends BaseService {
@@ -28,7 +29,54 @@ export class JwtService extends BaseService {
     try {
       return await this.jwtService.verifyAsync<IPayload>(token);
     } catch (error) {
-      //  this.UnauthorizedException("Token is invalid");
+      throw new UnauthorizedException("Token is invalid");
+    }
+  }
+
+  async generateOtpToken(
+    accountId: string,
+    type: VerifyOtpCase,
+  ): Promise<string> {
+    const payloadData: Record<string, any> = {
+      accountId: accountId,
+      type: type,
+    };
+
+    const generateToken = this.jwtService.signAsync(payloadData, {
+      expiresIn: "1m",
+    });
+    const [token] = await Promise.all([generateToken]);
+    return token;
+  }
+
+  async verifyOtpToken(token: string): Promise<IOtpPayload> {
+    try {
+      return await this.jwtService.verifyAsync<IOtpPayload>(token);
+    } catch (error) {
+      throw new UnauthorizedException("Token is invalid");
+    }
+  }
+
+  async generateOtpTokenSuccess(
+    accountId: string,
+    type: VerifyOtpCase,
+  ): Promise<string> {
+    const payloadData: Record<string, any> = {
+      accountId: accountId,
+      type: type,
+    };
+
+    const generateToken = this.jwtService.signAsync(payloadData, {
+      expiresIn: "15m",
+    });
+    const [token] = await Promise.all([generateToken]);
+    return token;
+  }
+
+  async verifyOtpTokenSuccess(token: string): Promise<IOtpPayload> {
+    try {
+      return await this.jwtService.verifyAsync<IOtpPayload>(token);
+    } catch (error) {
       throw new UnauthorizedException("Token is invalid");
     }
   }

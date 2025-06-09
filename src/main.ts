@@ -19,7 +19,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors();
-  app.setGlobalPrefix(process.env.API_PREFIX || "api");
+  app.setGlobalPrefix(configService.get<string>("API_PREFIX") || "api");
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(validatePipeConfig);
 

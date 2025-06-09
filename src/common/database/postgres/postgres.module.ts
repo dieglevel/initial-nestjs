@@ -20,8 +20,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
           database: configService.get<string>("POSTGRES_DB"),
           autoLoadEntities: true,
           synchronize: true,
-          dropSchema:
-            configService.get<boolean>("DATABASE_DROP_SCHEMA") || false,
+          dropSchema: configService.get<boolean>("DATABASE_DROP_SCHEMA", false),
           entities: entities,
         };
       },

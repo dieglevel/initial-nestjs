@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
-export class CreateAccountDto implements Partial<IAccountEntity> {
+export class CreateAccountRequest implements Partial<IAccountEntity> {
   @ApiProperty({ default: "john_doe" })
   @IsString()
   @IsNotEmpty()

@@ -1,13 +1,16 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Redis } from "ioredis";
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: Redis;
 
-  async onModuleInit() {
+  constructor(private readonly configService: ConfigService) {}
+
+  onModuleInit() {
     this.client = new Redis({
-      host: process.env.REDIS_HOST || "localhost",
-      port: parseInt(process.env.REDIS_PORT || "6379"),
+      host: this.configService.get<string>("REDIS_HOST") || "localhost",
+      port: this.configService.get<number>("REDIS_PORT") || 6379,
       retryStrategy: (times) => Math.min(times * 100, 3000),
       reconnectOnError: (err) =>
         /READONLY|ETIMEDOUT|ECONNRESET/.test(err.message),
@@ -17,8 +20,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     this.client.on("error", (err) => console.error("Redis error:", err));
     this.client.on("end", () => console.warn("Redis connection closed"));
     this.client.on("reconnecting", () => console.warn("Redis reconnecting..."));
-
-    await this.client.set("test", "test", "EX", 1000);
   }
 
   async onModuleDestroy() {

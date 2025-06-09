@@ -5,7 +5,3 @@ export type IPayload = {
   role: ROLE_ENUM;
   accessToken?: string;
 } & Record<string, any>;
-
-export type IPayloadPayment = {
-  orderId: string;
-};

@@ -34,7 +34,10 @@ export class AccountEntity
   @Column({ default: false })
   isActive: boolean;
 
-  @OneToOne(() => DetailInformationEntity)
+  @OneToOne(
+    () => DetailInformationEntity,
+    (detailInformation) => detailInformation.account,
+  )
   detailInformation: DetailInformationEntity;
 
   @ManyToOne(() => RoleEntity, (role) => role.accounts)

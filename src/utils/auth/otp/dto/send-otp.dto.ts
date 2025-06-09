@@ -12,7 +12,8 @@ export class SendOTPDto {
   typeSend: SendOtpCase;
 
   @IsNotEmpty()
-  account: AccountEntity;
+  @IsString()
+  accountId: string;
 
   @IsIn(ListVerifyOtpCase)
   case: VerifyOtpCase;

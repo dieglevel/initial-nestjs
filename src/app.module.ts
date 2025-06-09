@@ -9,13 +9,27 @@ import { AuthModule } from "./app/account/auth";
 import { GmailModule } from "./utils/gmail";
 import { OtpModule } from "./utils/auth/otp";
 import { JwtModule } from "@nestjs/jwt";
+import { RunSeederService } from "./seeders/run-seeder.service";
+import { RoleSeeder } from "./seeders/implement";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import {
+  AccountEntity,
+  DetailInformationEntity,
+  RoleEntity,
+  SessionEntity,
+} from "./entities/entity/implement/auth";
 
 @Module({
   imports: [
     ConfigModule,
     AppModule,
     DatabaseModule,
-    // TypeOrmModule.forFeature([]),
+    TypeOrmModule.forFeature([
+      AccountEntity,
+      DetailInformationEntity,
+      RoleEntity,
+      SessionEntity,
+    ]),
     DetailInformationModule,
     AuthModule,
     RedisModule,
@@ -25,7 +39,7 @@ import { JwtModule } from "@nestjs/jwt";
     JwtModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [RunSeederService, RoleSeeder],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
