@@ -1,15 +1,7 @@
-import {
-  Body,
-  Controller,
-  Header,
-  Headers,
-  HttpCode,
-  Post,
-} from "@nestjs/common";
+import { Body, Controller, Headers, HttpCode, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiConflictResponse,
   ApiHeader,
 } from "@nestjs/swagger";
@@ -18,15 +10,15 @@ import { ApiResponseWrapperSingle } from "@/common/decorators";
 import {
   CreateAccountRequest,
   CreateAccountResponse,
+  LoginRequest,
+  LoginResponse,
   ResendOtpRequest,
   ResendOtpResponse,
   VerifyForgotPasswordOtpRequest,
   VerifyForgotPasswordOtpResponse,
   VerifyOtpRequest,
   VerifyOtpResponse,
-  VerifyRegisterOtpRequest,
 } from "./dto";
-import { VerifyRegisterOtpResponse } from "./dto/response/verify-register-otp";
 
 @Controller("auth")
 export class AuthController {
@@ -87,5 +79,13 @@ export class AuthController {
       authHeader,
       verifyOtp,
     );
+  }
+
+  @Post("login")
+  @ApiResponseWrapperSingle(LoginResponse)
+  public async login(
+    @Body() loginRequest: LoginRequest,
+  ): Promise<LoginResponse> {
+    return await this.authService.login(loginRequest);
   }
 }

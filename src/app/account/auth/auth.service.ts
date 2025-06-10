@@ -6,29 +6,32 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
 import { REGEX_EMAIL } from "@/common/validate";
+import * as bcrypt from "bcrypt";
 
 import {
   CreateAccountRequest,
+  LoginRequest,
   ResendOtpRequest,
   VerifyForgotPasswordOtpRequest,
   VerifyOtpRequest,
-  VerifyRegisterOtpRequest,
 } from "./dto/request";
 import {
   AccountEntity,
   DetailInformationEntity,
   RoleEntity,
+  SessionEntity,
 } from "@/entities/entity/implement/auth";
 import {
   CreateAccountResponse,
+  LoginResponse,
   ResendOtpResponse,
   VerifyForgotPasswordOtpResponse,
   VerifyOtpResponse,
-  VerifyRegisterOtpResponse,
 } from "./dto";
 import { generatePassword } from "@/utils/password/generate-password";
 import { RedisService } from "@/utils/redis";
 import { ROLE_ENUM } from "@/entities/enum";
+import { IPayload } from "@/utils/auth/jwt/payload";
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -39,7 +42,8 @@ export class AuthService extends BaseService {
     @InjectRepository(RoleEntity)
     private readonly roleRepository: Repository<RoleEntity>,
 
-    private readonly sessionService: SessionService,
+    @InjectRepository(SessionEntity)
+    private readonly sessionRepository: Repository<SessionEntity>,
 
     private entityManager: EntityManager,
     private jwtService: JwtService,
@@ -259,6 +263,52 @@ export class AuthService extends BaseService {
 
       return {
         success: true,
+      };
+    } catch (error) {
+      this.ThrowError(error);
+    }
+  }
+
+  async login(dto: LoginRequest): Promise<LoginResponse> {
+    try {
+      const account = await this.accountRepository.findOne({
+        where: [
+          { email: dto.identifier, isActive: true },
+          { username: dto.identifier, isActive: true },
+        ],
+        relations: ["role"],
+      });
+
+      if (!account) {
+        this.NotFoundException("Wrong email/username or password");
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        dto.password,
+        account.password,
+      );
+
+      if (!isPasswordValid) {
+        this.UnauthorizedException("Wrong email/username or password");
+      }
+
+      const payload: IPayload = {
+        id: account.id,
+        role: account.role.name,
+      };
+
+      const { accessToken, refreshToken } =
+        await this.jwtService.generateToken(payload);
+
+      const session = await this.sessionRepository.save({
+        account: account,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      });
+
+      return {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
       };
     } catch (error) {
       this.ThrowError(error);

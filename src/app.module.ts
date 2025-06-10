@@ -10,7 +10,7 @@ import { GmailModule } from "./utils/gmail";
 import { OtpModule } from "./utils/auth/otp";
 import { JwtModule } from "@nestjs/jwt";
 import { RunSeederService } from "./seeders/run-seeder.service";
-import { RoleSeeder } from "./seeders/implement";
+import { AccountSeeder, RoleSeeder } from "./seeders/implement";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import {
   AccountEntity,
@@ -39,7 +39,7 @@ import {
     JwtModule,
   ],
   controllers: [],
-  providers: [RunSeederService, RoleSeeder],
+  providers: [RunSeederService, RoleSeeder, AccountSeeder],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
